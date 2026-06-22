@@ -1,3 +1,4 @@
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,14 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useSignUp } from "@clerk/nextjs/legacy";
+import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import {Eye,EyeOff} from 'lucide-react'
-import Link from "next/link";
-import { Alert,AlertDescription } from "@/components/ui/alert";
-import { Label } from "@/components/ui/label";
 
 function Signup() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -136,7 +136,7 @@ function Signup() {
               </Button>
             </form>
           ) : (
-            <form onSubmit ={onPressVerify} className="space-y-4">
+            <form onSubmit={onPressVerify} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="code">Verification Code</Label>
                 <Input
