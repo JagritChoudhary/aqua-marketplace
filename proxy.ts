@@ -4,42 +4,34 @@ import {
   currentUser,
 } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-
 const ispublicRoutes = createRouteMatcher([
   "/",
-  "/api/webhook/register",
-  "/sign-up",
-  "/sign-in",
+  "/api/webhooks(.*)",
+  "/sign-up(.*)",
+  "/sign-in(.*)",
 ]);
-
 export default clerkMiddleware(async (auth, req) => {
-  try{
   if (!ispublicRoutes(req)) {
     await auth.protect();
   }
 
- 
-    const user = await currentUser();
-    const role = user?.publicMetadata.role as string | undefined;
-  
-    //admin roles redirection-
-    if (role === "admin" && req.nextUrl.pathname === "/dashboard") {
-      return NextResponse.redirect(new URL("/admin/dashboard", req.url));
-    }
-    //prevent non-admin users to access to admin routes
-    if (role !== "admin" && req.nextUrl.pathname.startsWith("/admin")) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
-    }
-    //redirect authenticated user trying to access public routes;they still can access sign-in -
-    const { userId } = await auth();
-    if (userId && ["/sign-up", "/sign-in"].includes(req.nextUrl.pathname)) {
-      return NextResponse.redirect(
-        new URL(role === "admin" ? "/admin/dashboard" : "/dashboard", req.url),
-      );
-    }
-  } catch (error) {
-    console.log(error)
-    return NextResponse.redirect(new URL("/error",req.url))
+  const user = await currentUser();
+  const role = user?.publicMetadata.role as string | undefined;
+
+  //admin roles redirection-
+  if (role === "admin" && req.nextUrl.pathname === "/dashboard") {
+    return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+  }
+  //prevent non-admin users to access to admin routes
+  if (role !== "admin" && req.nextUrl.pathname.startsWith("/admin")) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+  //redirect authenticated user trying to access public routes;they still can access sign-in -
+  const { userId } = await auth();
+  if (userId && ["/sign-up", "/sign-in"].includes(req.nextUrl.pathname)) {
+    return NextResponse.redirect(
+      new URL(role === "admin" ? "/admin/dashboard" : "/dashboard", req.url),
+    );
   }
 });
 
