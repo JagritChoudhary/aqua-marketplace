@@ -17,13 +17,14 @@ model User {
   id    String  @id @default(uuid())
   email String  @unique
   name  String?
-  todos Todos[]
+  
+  todos Orders[]
 }
 
-model Todos {
+model Orders {
   id          String   @id @default(cuid())
   title       String
-  isCompleted Boolean  @default(false)
+  Delivered Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   user        User     @relation(fields: [userId], references: [id])
