@@ -43,8 +43,8 @@ export async function POST(req: Request) {
       const { email_addresses, primary_email_address_id } = evt.data;
       //log practice
 
-      const primaryEmail = email_addresses.find(
-        (email) => email.id == primary_email_address_id, //finding primaryemail id from array
+      const primaryEmail =  email_addresses.find(
+        (email) => email.id === primary_email_address_id, //finding primaryemail id from array
       );
       if (!primaryEmail) {
         return new Response("No Primary email found", { status: 400 });
@@ -59,7 +59,9 @@ export async function POST(req: Request) {
       });
       console.log("New user created", newUser);
     } catch (err) {
-      return new Response("Error creating user in db", { status: 400 });
+      console.error(err);
+      
+      return new Response("Error creating user in db",{ status: 400 });
     }
   }
 
