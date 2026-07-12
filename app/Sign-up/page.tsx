@@ -1,14 +1,23 @@
+"use client";
+
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSignUp } from "@clerk/nextjs";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-function SignUp() {
+export default function SignUp() {
   const { signUp } = useSignUp();
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +51,7 @@ function SignUp() {
   }
 
   async function onVerify(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault()
     try {
       await signUp.verifications.verifyEmailCode({
         code,
@@ -66,62 +76,101 @@ function SignUp() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="flex items-center justify-center min-h-screen bg-violet-400">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
-            Sign Up Aqua-Marketplace
+            Sign Up for 
+            Aqua-Marketplace
           </CardTitle>
-          <CardContent>
-            {!pendingVerification ? (
-              <form onSubmit={Submit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+        </CardHeader>
+        <CardContent>
+          {!pendingVerification ? (
+            <form onSubmit={Submit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  type="email"
+                  id="email"
+                  value={emailAddress}
+                  onChange={(e) => {
+                    setEmailAddress(e.target.value);
+                  }}
+                  required
+                ></Input>
+              </div>
+              <div className="space-y-2">
+                <div className="relative">
+                  <Label htmlFor="password">Password</Label>
                   <Input
-                    type="email"
-                    id="email"
-                    value={emailAddress}
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
                     onChange={(e) => {
-                      setEmailAddress(e.target.value);
+                      setPassword(e.target.value);
                     }}
                     required
                   ></Input>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPassword(!showPassword);
+                    }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-500"></EyeOff>
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-500"></Eye>
+                    )}
+                  </button>
                 </div>
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                      required
-                    ></Input>
-                    <button>
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-gray-500"></EyeOff>
-                      ) : (
-                        <Eye className="h-4 w-4 text-gray-500"></Eye>
-                      )}
-                    </button>
-                  </div>
-                </div>
-                {error && (
+              </div>
+              {error ? (
                 <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
-              )}
+              ) : null}
               <Button type="submit" className="w-full">
                 Sign Up
               </Button>
-              </form>
-            ) : (
-              <form></form>
-            )}
-          </CardContent>
-        </CardHeader>
+            </form>
+          ) : (
+            <form onSubmit={onVerify} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="code">Code</Label>
+                <Input
+                  id="code"
+                  value={code}
+                  onChange={(e) => {
+                    setCode(e.target.value);
+                  }}
+                  placeholder="Enter email code"
+                  required
+                ></Input>
+              </div>
+              {error ? (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              ) : null}
+              <Button type="submit" className="w-full">
+                Verify
+              </Button>
+            </form>
+          )}
+        </CardContent>
+        <CardFooter className="justify-center">
+          <p className="text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link
+              href={"/sign-in"}
+              className="font-medium text-primary hover:underline"
+            >
+              Sign-in
+            </Link>
+          </p>
+        </CardFooter>
       </Card>
     </div>
   );
