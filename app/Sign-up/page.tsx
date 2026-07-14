@@ -76,8 +76,9 @@ export default function SignUp() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-violet-400">
-      <Card>
+    <div className="flex items-center justify-center min-h-screen bg-center bg-cover bg-no-repeat"
+    style={{backgroundImage:"url('/images/bg.jpg')"}}>
+      <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
             Sign Up for 
@@ -100,8 +101,9 @@ export default function SignUp() {
                 ></Input>
               </div>
               <div className="space-y-2">
-                <div className="relative">
+               
                   <Label htmlFor="password">Password</Label>
+                   <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
@@ -116,7 +118,7 @@ export default function SignUp() {
                     onClick={() => {
                       setShowPassword(!showPassword);
                     }}
-                    className="absolute right-2 top-1/2 -translate-y-1/2"
+                    className="absolute right-2 top-1/3 -translate-y-1"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4 text-gray-500"></EyeOff>
@@ -131,7 +133,7 @@ export default function SignUp() {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               ) : null}
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full cursor-pointer">
                 Sign Up
               </Button>
             </form>

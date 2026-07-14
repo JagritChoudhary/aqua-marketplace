@@ -27,7 +27,7 @@ model Orders {
   userId    String
 }
 
-model Sellers {
+model Seller {
   id    String  @id @default(cuid())
   email String  @unique
   name  String?
